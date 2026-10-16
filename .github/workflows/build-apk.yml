@@ -41,9 +41,12 @@ jobs:
 
       - name: Build debug APK
         run: |
-          # zip 往返会丢可执行位，保险起见补一下
-          chmod +x gradlew
-          ./gradlew clean assembleDebug --no-daemon
+          # 用系统的 gradle，不用 ./gradlew。
+          #
+          # 这个工程没有 wrapper —— 根目录只有 build.gradle.kts / settings.gradle.kts /
+          # gradle 目录，没有 gradlew 脚本，gradle/wrapper 也是空的。
+          # （原来 Nakour 那边就是这么编的，它靠 GitHub 镜像里预装的 gradle。）
+          gradle clean assembleDebug --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v7
