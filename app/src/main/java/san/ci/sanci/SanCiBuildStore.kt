@@ -54,7 +54,7 @@ object SanCiBuildStore {
     var progress: Float by mutableStateOf(0f)
         private set
 
-    fun setProgress(v: Float) {
+    fun applyProgress(v: Float) {
         progress = v.coerceIn(0f, 1f)
     }
 

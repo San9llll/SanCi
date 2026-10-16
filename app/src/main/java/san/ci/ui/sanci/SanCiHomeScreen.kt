@@ -116,7 +116,7 @@ fun SanCiHomeScreen(
                                 // 装 Termux 环境（下载 + 解压 + 铺符号链接，几分钟）
                                 Bootstrap.install(ctx) { progress, line ->
                                     // 它的回调是 (进度 0~1, 说明文字)
-                                    SanCiBuildStore.setProgress(progress)
+                                    SanCiBuildStore.applyProgress(progress)
                                     SanCiBuildStore.append(line)
                                 }
                                 envReady = Bootstrap.isInstalled(ctx)
