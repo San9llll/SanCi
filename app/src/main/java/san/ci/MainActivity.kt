@@ -71,39 +71,11 @@ class MainActivity : ComponentActivity() {
                 // 这样设置页 / Agent 页这些不用一页页往下传，也不会漏
                 val backdrop = com.kyant.backdrop.backdrops.rememberLayerBackdrop()
 
-                // ---- 首次进入的准备界面 ----
-                //
-                // 走完一次就记下来，以后不再出现。
-                // 想在已有数据的情况下再看一遍：设置 → 关于 → 连点版本号 5 次。
-                //（原来那个「开发者工具」分区已经整个删掉了，这是唯一的后门）
-                //
-                // ⚠️ 用 remember 而不是 rememberSaveable：
-                // 走完之后这一个进程就不再显示了，退出重进由 SetupStore 那个标记管。
-                //
-                // ⚠️ 不能用 `this` —— 这儿是 composable 的 lambda，
-                // `this` 不是 Activity，编译期直接报错。要 LocalContext。
-                val setupCtx = LocalContext.current
-                val setupDoneFlag = remember {
-                    san.ci.ui.setup.SetupStore.init(setupCtx)
-                    androidx.compose.runtime.mutableStateOf(
-                        !san.ci.ui.setup.SetupStore.shouldShow
-                    )
-                }
-
-                val introDone = remember { androidx.compose.runtime.mutableStateOf(false) }
-                if (!setupDoneFlag.value && !introDone.value) {
-                	san.ci.ui.splash.IntroScreen(onDone = { introDone.value = true })
-                } else if (!setupDoneFlag.value) {
-                    san.ci.ui.setup.SetupScreen(
-                        onFinish = { setupDoneFlag.value = true }
-                    )
-                } else {
                     androidx.compose.runtime.CompositionLocalProvider(
                         san.ci.ui.component.LocalGlassBackdrop provides backdrop
                     ) {
                         AppShell(p, backdrop)
                     }
-                }
             }
         }
     }

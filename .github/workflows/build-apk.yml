@@ -1,0 +1,68 @@
+name: Build APK
+
+# 只编 manager 那一支。
+#
+# SanCi 是从 KernelSU 系的工程改的，那套仓库里通常还带着内核 / Rust 用户态的构建
+# （编 .ko、交叉编译 ksud）。那些跟"改个 UI、出个包试试"完全无关，
+# 但它们没有触发条件的话，一推代码就全跑起来，每次白等十几分钟。
+#
+# 这个 workflow 只做一件事：拿现成的 native 产物（jniLibs 里已经有 libksud.so），
+# 直接编 APK。
+
+on:
+  push:
+    branches: ["main", "master"]
+    paths:
+      - 'app/**'
+      - 'gradle/**'
+      - 'build.gradle.kts'
+      - 'settings.gradle.kts'
+      - '.github/workflows/build-apk.yml'
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Build debug APK
+        run: |
+          # zip 往返会丢可执行位，保险起见补一下
+          chmod +x gradlew
+          ./gradlew clean assembleDebug --no-daemon
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v7
+        with:
+          name: sanci-debug-apk
+          path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+
+      # 打了 tag（或者手动填了）就顺手发个 Release，里面只有 APK
+      - name: Release
+        if: startsWith(github.ref, 'refs/tags/v') || inputs.tag != ''
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ inputs.tag || github.ref_name }}
+          name: SanCi ${{ inputs.tag || github.ref_name }}
+          body: |
+            SanCi —— 手机上编译 APK。
+
+            debug 版，用 Android 默认调试签名，可以直接装。
+          files: app/build/outputs/apk/debug/*.apk
+          draft: false
+          prerelease: false

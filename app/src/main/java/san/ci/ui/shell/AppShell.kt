@@ -76,7 +76,6 @@ import san.ci.ui.home.HomeSceneRail
 import san.ci.ui.home.HomeScreen
 import san.ci.ui.nav.Dest
 import san.ci.ui.files.FileManagerScreen
-import san.ci.ui.pages.ToolsScreen
 import san.ci.ui.theme.CardStyle
 import san.ci.ui.settings.AboutScreen
 import san.ci.ui.settings.SettingsScreen
@@ -857,28 +856,4 @@ private fun RippleRing(frame: androidx.compose.runtime.MutableIntState) {
  *什么时候会走到这儿：用户把 addons/下面那个目录删了、或者 Agent写歪了 id。
  *别白屏 ——给一句人话 +一个能退回去的按钮。
  */
-@Composable
-private fun AddonMissingPage(onBack: () -> Unit) {
-	Column(
-		Modifier
-			.fillMaxSize()
-			.padding(24.dp),
-	) {
-		Spacer(Modifier.height(40.dp))
-		Text("这个本地功能不在了", fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
-		Spacer(Modifier.height(8.dp))
-		Text(
-			"addons/下面那个目录可能被删了，或者名字对不上。" +
-				"回功能页刷新一下看看，也可以让 Agent重新写一个。",
-			fontSize = 12.5.sp,
-			color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
-		)
-		Spacer(Modifier.height(18.dp))
-		Text(
-			"←回功能页",
-			fontSize = 13.sp,
-			color = MiuixTheme.colorScheme.primary,
-			modifier = Modifier.clickable { onBack() },
-		)
-	}
-}
+

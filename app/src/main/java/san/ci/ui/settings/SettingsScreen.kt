@@ -84,26 +84,19 @@ fun SettingsScreen(
                 }
             }
 
-            item(key = "keepalive") {
-                //1.03.0：电池优化那几项（后台留存 /开机自启 /白名单）
- //归到一块儿，标题就写「电池优化」，用户一眼知道这几个是干同一件事的
- SectionTitle("电池优化")
+            item(key = "battery") {
+                // 只剩这一条了。
+                //
+                // 原来这儿还有「后台留存」「开机自启」两项 —— 那是给 Agent 的前台服务用的
+                // （任务丢给服务跑、开机拉起来待命）。SanCi 删掉了 Agent，也没有常驻服务，
+                // 那两项留着只是摆设。
+                //
+                // 白名单这条还得留：编译一跑十几分钟，系统省电策略真的会去杀进程。
+                SectionTitle("电池")
                 SettingsCard(index = 1) {
-                    IndicatorSwitchPreference(
-                        checked = san.ci.agent.AgentTaskStore.keepAlive,
-                        onCheckedChange = { san.ci.agent.AgentTaskStore.updateKeepAlive(it) },
-                        title = "后台留存",
-                        summary = "任务丢给前台服务跑，切页 / 切后台都不容易断",
-                    )
-                    IndicatorSwitchPreference(
-                        checked = san.ci.agent.AgentTaskStore.bootStart,
-                        onCheckedChange = { san.ci.agent.AgentTaskStore.updateBootStart(it) },
-                        title = "开机自启",
-                        summary = "开机后把 Agent 服务拉起来待命",
-                    )
                     ArrowPreference(
-                        title = "把它加进电池白名单",
-                        summary = "系统省电策略有时还是会杀，加进白名单更稳",
+                        title = "加进电池白名单",
+                        summary = "编译要跑十几分钟，不加的话系统可能半路把它杀掉",
                         onClick = { requestIgnoreBattery(ctx) },
                     )
                 }

@@ -151,8 +151,6 @@ fun AboutScreen(onBack: () -> Unit = {}) {
                             taps++
                             if (taps < 5) return@clickable
                             taps = 0
-                            san.ci.ui.setup.SetupStore.init(ctx)
-                            san.ci.ui.setup.SetupStore.reset()
                             // 光重置标记不够 —— MainActivity 那个 setupDoneFlag 是
                             // remember 出来的一次性值，本进程内不会再读第二遍。
                             // 所以直接把 Activity 重建，onCreate 重跑就会走准备界面。
