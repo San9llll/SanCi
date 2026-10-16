@@ -75,9 +75,6 @@ import san.ci.ui.home.HomeSceneDecor
 import san.ci.ui.home.HomeSceneRail
 import san.ci.ui.home.HomeScreen
 import san.ci.ui.nav.Dest
-import san.ci.ui.agent.AgentConfigScreen
-import san.ci.ui.agent.AgentScreen
-import san.ci.ui.agent.AgentSessionsScreen
 import san.ci.ui.files.FileManagerScreen
 import san.ci.ui.pages.ToolsScreen
 import san.ci.ui.theme.CardStyle
@@ -99,8 +96,7 @@ private const val COMPACT_WIDTH_DP = 600f
 private val NAV_DESTS = listOf(Dest.Home, Dest.Progress, Dest.Ci, Dest.Settings)
 
 private enum class Sub {
-        None, Theme, About, Files, Terminal, AgentConfig, AgentSessions,
-        Shelf, NewBook, Reader, BookConfig, Personas, Addon,
+        None, Theme, About, Files, Terminal,
     }
 
 /**
@@ -115,10 +111,6 @@ private enum class Sub {
 fun AppShell(prefs: ThemePrefs, backdrop: com.kyant.backdrop.backdrops.LayerBackdrop) {
     var current by remember { mutableStateOf(Dest.Home) }
     var sub by remember { mutableStateOf(Sub.None) }
-    // 书柜里当前翻开的是哪本
-    var bookId by remember { mutableStateOf("") }
- //本地功能页当前打开的是哪一个（Agent自己写的那些）
- var addonId by remember { mutableStateOf("") }
 
     // 方案 B 的扩散圆心（0~1 归一化），是**点下去那一下的真实坐标**
     var spreadOrigin by remember { mutableStateOf(androidx.compose.ui.geometry.Offset(0.5f, 0.5f)) }
@@ -315,7 +307,7 @@ fun AppShell(prefs: ThemePrefs, backdrop: com.kyant.backdrop.backdrops.LayerBack
 
     // 设置系：设置页本身 + 它下面所有子页，都吃「设置页背景」
     val isSettingsPage = when (sub) {
-        Sub.Theme, Sub.About, Sub.AgentConfig, Sub.Personas -> true
+        Sub.Theme, Sub.About -> true
         Sub.None -> current == Dest.Settings
         else -> false
     }
@@ -365,46 +357,6 @@ fun AppShell(prefs: ThemePrefs, backdrop: com.kyant.backdrop.backdrops.LayerBack
             Sub.About -> AboutScreen(onBack = { sub = Sub.None })
             Sub.Files -> FileManagerScreen(onBack = { sub = Sub.None }, backdrop = backdrop)
             Sub.Terminal -> san.ci.ui.terminal.TerminalScreen(onBack = { sub = Sub.None })
-            Sub.AgentConfig -> AgentConfigScreen(
-                onBack = { sub = Sub.None },
-                onOpenPersonas = { sub = Sub.Personas },
-            )
-            Sub.Personas -> san.ci.ui.agent.PersonasScreen(onBack = { sub = Sub.AgentConfig })
-            Sub.AgentSessions -> AgentSessionsScreen(onBack = { sub = Sub.None })
-
- //本地功能：Agent写出来的那些页面，用同一套渲染器画
- Sub.Addon -> {
- val a = san.ci.ui.addon.AddonStore.byId(addonId)
- if (a == null) {
- //功能被删了 / id对不上 ——别白屏，给个能退回去的页
- AddonMissingPage(onBack = { addonId = ""; sub = Sub.None })
- } else {
- san.ci.ui.addon.AddonScreen(
- addon = a,
- onBack = { sub = Sub.None },
- backdrop = backdrop,
- )
- }
- }
-
-            Sub.Shelf -> san.ci.ui.book.ShelfScreen(
-                onOpenBook = { id -> bookId = id; sub = Sub.Reader },
-                onNewBook = { sub = Sub.NewBook },
-                backdrop = backdrop,
-            )
-            Sub.NewBook -> san.ci.ui.book.NewBookScreen(
-                onBack = { sub = Sub.Shelf },
-                onCreated = { id -> bookId = id; sub = Sub.Reader },
-            )
-            Sub.Reader -> san.ci.ui.book.ReaderScreen(
-                bookId = bookId,
-                onBack = { sub = Sub.Shelf },
-                onOpenConfig = { sub = Sub.BookConfig },
-            )
-            Sub.BookConfig -> san.ci.ui.book.BookConfigScreen(
-                bookId = bookId,
-                onBack = { sub = Sub.Reader },
-            )
         }
     }
 

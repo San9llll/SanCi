@@ -82,10 +82,6 @@
         </activity>
 
         <!-- Agent 任务宿主：前台服务托着，切页/切后台都不容易被杀 -->
-        <service
-            android:name=".agent.AgentTaskService"
-            android:exported="false"
-            android:foregroundServiceType="dataSync" />
 
         <!-- 悬浮球：飘在别的应用上面看任务进度 -->
         <service
@@ -94,15 +90,6 @@
             android:foregroundServiceType="specialUse" />
 
         <!-- 开机自启：把 Agent 服务拉起来 -->
-        <receiver
-            android:name=".agent.BootReceiver"
-            android:exported="true"
-            android:enabled="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-            </intent-filter>
-        </receiver>
 
         <!-- Shizuku 的 binder provider（官方要求这样声明） -->
         <provider
@@ -124,10 +111,6 @@
                 android:resource="@xml/file_paths" />
         </provider>
     <!--本地功能（Agent自己写的那些）的悬浮窗 ——1.03.0加的 -->
- <service
- android:name=".ui.addon.AddonFloatingService"
- android:exported="false"
- android:foregroundServiceType="specialUse" />
 
  </application>
 </manifest>

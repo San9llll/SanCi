@@ -54,7 +54,6 @@ fun SettingsScreen(
     onOpenAbout: () -> Unit,
 ) {
     val ctx = androidx.compose.ui.platform.LocalContext.current
-    san.ci.agent.AgentTaskStore.init(ctx)
 
     // 权限被拒的时候给一句提示（开关状态本身是可观察的，不用手动刷新）
     var floatDenied by remember { androidx.compose.runtime.mutableStateOf(false) }
