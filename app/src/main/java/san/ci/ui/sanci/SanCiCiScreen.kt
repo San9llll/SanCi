@@ -1,5 +1,6 @@
 package san.ci.ui.sanci
 
+import top.yukonga.miuix.kmp.basic.TextButton
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -108,16 +109,15 @@ fun SanCiCiScreen(railWidth: Dp = 0.dp) {
                         modifier = Modifier.weight(1f),
                     ) { Text(if (loading) "查询中…" else "查询") }
 
-                    Button(
+                    TextButton(
+                        text = "网页打开",
                         onClick = {
                             if (repo.isNotBlank()) {
                                 uriHandler.openUri("https://github.com/${repo.trim()}/actions")
                             }
                         },
-                        enabled = repo.contains("/"),
-                        colors = ButtonDefaults.buttonColorsSecondary(),
                         modifier = Modifier.weight(1f),
-                    ) { Text("网页打开") }
+                    )
                 }
             }
         }
@@ -156,7 +156,7 @@ fun SanCiCiScreen(railWidth: Dp = 0.dp) {
                             Text("●", fontSize = 12.sp, color = tint)
                             Spacer(Modifier.width(10.dp))
                             Column(Modifier.weight(1f)) {
-                                Text(run.name, style = MiuixTheme.textStyles.title5)
+                                Text(run.name, style = MiuixTheme.textStyles.title4)
                                 Text(
                                     run.time + " · " + run.sha,
                                     style = MiuixTheme.textStyles.footnote1,

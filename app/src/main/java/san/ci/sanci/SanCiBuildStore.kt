@@ -46,7 +46,16 @@ object SanCiBuildStore {
     /** 开一个新任务。会清掉上次的日志。 */
     fun start(zipName: String) {
         log.clear()
+        progress = 0f
         task = BuildTask(zipName = zipName, status = Status.Preparing)
+    }
+
+    /** 装环境的进度（0~1）。Bootstrap 的回调会给这个数。 */
+    var progress: Float by mutableStateOf(0f)
+        private set
+
+    fun setProgress(v: Float) {
+        progress = v.coerceIn(0f, 1f)
     }
 
     fun setStatus(status: Status) {

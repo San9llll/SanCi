@@ -1,5 +1,6 @@
 package san.ci.ui.sanci
 
+import top.yukonga.miuix.kmp.basic.TextButton
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -113,7 +114,9 @@ fun SanCiHomeScreen(
                             installing = true
                             scope.launch {
                                 // 装 Termux 环境（下载 + 解压 + 铺符号链接，几分钟）
-                                Bootstrap.install(ctx) { line ->
+                                Bootstrap.install(ctx) { progress, line ->
+                                    // 它的回调是 (进度 0~1, 说明文字)
+                                    SanCiBuildStore.setProgress(progress)
                                     SanCiBuildStore.append(line)
                                 }
                                 envReady = Bootstrap.isInstalled(ctx)
@@ -160,11 +163,11 @@ fun SanCiHomeScreen(
                 )
                 Spacer(Modifier.height(14.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Button(
+                    TextButton(
+                        text = "选 zip",
                         onClick = { picker.launch(arrayOf("application/zip", "application/octet-stream", "*/*")) },
-                        colors = ButtonDefaults.buttonColorsSecondary(),
                         modifier = Modifier.weight(1f),
-                    ) { Text("选 zip") }
+                    )
                     Button(
                         onClick = {
                             val uri = pickedUri ?: return@Button
@@ -214,7 +217,7 @@ private fun HomeEntry(title: String, summary: String, onClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(Modifier.weight(1f)) {
-                Text(title, style = MiuixTheme.textStyles.title5)
+                Text(title, style = MiuixTheme.textStyles.title4)
                 Text(
                     summary,
                     style = MiuixTheme.textStyles.footnote1,

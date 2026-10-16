@@ -113,7 +113,7 @@ fun SanCiProgressScreen(railWidth: Dp = 0.dp) {
                 Column(Modifier.padding(14.dp)) {
                     when (task.status) {
                         SanCiBuildStore.Status.Success -> {
-                            Text("编译完成", style = MiuixTheme.textStyles.title5)
+                            Text("编译完成", style = MiuixTheme.textStyles.title4)
                             Spacer(Modifier.height(4.dp))
                             Text(
                                 task.apkPath?.let { "产物：$it" } ?: "产物在 App 的 output 目录里",
@@ -126,7 +126,7 @@ fun SanCiProgressScreen(railWidth: Dp = 0.dp) {
                         SanCiBuildStore.Status.Failed -> {
                             Text(
                                 "编译失败",
-                                style = MiuixTheme.textStyles.title5,
+                                style = MiuixTheme.textStyles.title4,
                                 color = MiuixTheme.colorScheme.error,
                             )
                             Spacer(Modifier.height(4.dp))
